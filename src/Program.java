@@ -15,10 +15,20 @@ public class Program {
         System.out.println("Press 5: Find books from their author");
         System.out.println("Press 6: Find books from their ISBN");
         System.out.println("Press 7: Remove book");
-        System.out.println("Press ESC: End program" + "\n");
+        System.out.println("Press 8: End program" + "\n");
         System.out.println("Write a number followed by enter/return." + "\n");
 
-        checkUserInput();
+        switch (checkUserInput()) {
+            case 1 -> printBooksFromArrayList();
+            case 2 -> addBookToLibrary();
+            case 3 -> setBookFields();
+            case 4 -> printBooksFromArrayList();
+            case 5 -> printBooksFromArrayList();
+            case 6 -> printBooksFromArrayList();
+            case 7 -> printBooksFromArrayList();
+            case 8 -> printBooksFromArrayList();
+            case 0 -> printMenu();
+        }
     }
 
     public void addBooksFromFile() {
@@ -44,20 +54,22 @@ public class Program {
 
     // HELPER METHODS
 
-    private void checkUserInput() {
+    private int checkUserInput() {
         Scanner keyInput = new Scanner(System.in);
+        int returnNumber = 0;
+        String input = keyInput.nextLine();
 
-        switch (keyInput.nextLine()) {
-            case "1" -> printBooksFromArrayList();
-            case "2" -> addBookToLibrary();
-            case "3" -> setBookFields();
-            case "4" -> printBooksFromArrayList();
-            case "5" -> printBooksFromArrayList();
-            case "6" -> printBooksFromArrayList();
-            case "7" -> printBooksFromArrayList();
-            case "8" -> printBooksFromArrayList();
-            default -> System.out.println("Closing program...");
+        try {
+            if (Integer.parseInt(input) <= 8) {
+                returnNumber = Integer.parseInt(input);
+            } else {
+                System.out.println("Not a valid number");
+            }
+        } catch (NumberFormatException numberFormatException) {
+            System.out.println("Not a number");
         }
+
+        return returnNumber;
     }
 
     // CASE 1
@@ -101,6 +113,11 @@ public class Program {
 
         System.out.println("Book successfully added to the library");
         toMenuOrCloseProgram();
+    }
+
+    // CASE 3
+
+    private void setBookFields() {
     }
 
     // HELPER METHOD
