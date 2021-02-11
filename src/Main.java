@@ -8,8 +8,5 @@ public class Main {
 
         program.addBooksFromFile();
         program.printMenu();
-
     }
-
-
 }

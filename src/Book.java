@@ -1,3 +1,5 @@
+import java.util.Locale;
+
 public class Book {
     private long ISBN;
     private String bookTitle;
@@ -64,7 +66,7 @@ public class Book {
         System.out.println(bookTitle);
         System.out.println(authorName);
         System.out.println(String.valueOf(pageCount));
-        System.out.println(String.valueOf(genre));
+        System.out.println(String.valueOf(genre).substring(0, 1).toUpperCase() + String.valueOf(genre).substring(1).toLowerCase(Locale.ROOT));
         System.out.println();
     }
 }

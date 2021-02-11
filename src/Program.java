@@ -24,8 +24,8 @@ public class Program {
     public void addBooksFromFile() {
 
         try {
-        File bokTxt = new File("files/opg1/bok.txt");
-        Scanner fileScanner = new Scanner(bokTxt);
+            File bokTxt = new File("files/opg1/bok.txt");
+            Scanner fileScanner = new Scanner(bokTxt);
 
             while (fileScanner.hasNextLine()) {
                 long ISBN = Long.parseLong(fileScanner.nextLine());
@@ -37,11 +37,7 @@ public class Program {
                 bookArrayList.add(new Book(ISBN, bookTitle, authorName, pageCount, genre));
                 fileScanner.nextLine();
             }
-
-        fileScanner.close();
-        }
-
-        catch (FileNotFoundException fnfe) {
+        } catch (FileNotFoundException fnfe) {
             System.out.println("File not found");
         }
     }
@@ -52,48 +48,70 @@ public class Program {
         Scanner keyInput = new Scanner(System.in);
 
         switch (keyInput.nextLine()) {
-            case "1":
-                printBooksFromArrayList();
-                break;
-            case "2":
-                printBooksFromArrayList();
-                break;
-            case "3":
-                printBooksFromArrayList();
-                break;
-            case "4":
-                printBooksFromArrayList();
-                break;
-            case "5":
-                printBooksFromArrayList();
-                break;
-            case "6":
-                printBooksFromArrayList();
-                break;
-            case "7":
-                printBooksFromArrayList();
-                break;
-            case "8":
-                printBooksFromArrayList();
-                break;
-            default:
-                System.out.println("Closing program...");
+            case "1" -> printBooksFromArrayList();
+            case "2" -> addBookToLibrary();
+            case "3" -> setBookFields();
+            case "4" -> printBooksFromArrayList();
+            case "5" -> printBooksFromArrayList();
+            case "6" -> printBooksFromArrayList();
+            case "7" -> printBooksFromArrayList();
+            case "8" -> printBooksFromArrayList();
+            default -> System.out.println("Closing program...");
         }
-        keyInput.close();
     }
 
-    public void printBooksFromArrayList() {
+    // CASE 1
+
+    private void printBooksFromArrayList() {
         for (Book value : bookArrayList) {
             value.getBookInfo();
+        } toMenuOrCloseProgram();
+    }
+
+    // CASE 2
+
+    private void addBookToLibrary() {
+        System.out.println("To add a book to the library you need these fields:" + "\n");
+        System.out.println("ISBN, Title, Author, Number of pages, Genre" + "\n");
+
+        Scanner bookInputScanner = new Scanner(System.in);
+
+        try {
+            System.out.println("What is the ISBN?");
+                long ISBN = Long.parseLong(bookInputScanner.nextLine());
+            System.out.println("What is the title of the book?");
+                String bookTitle = bookInputScanner.nextLine();
+            System.out.println("What is the name of the author?");
+                String authorName = bookInputScanner.nextLine();
+            System.out.println("How many pages?");
+                short pageCount = Short.parseShort(bookInputScanner.nextLine());
+            System.out.println("Which genre (Crime, Action, Fantasy, Classic, Other)?");
+                Genre genre = Genre.valueOf(bookInputScanner.nextLine().toUpperCase());
+
+            bookArrayList.add(new Book(ISBN, bookTitle, authorName, pageCount, genre));
         }
+
+            catch (NumberFormatException numberFormatException) {
+                System.out.println("Not a number");
+                addBookToLibrary();
+            } catch (IllegalArgumentException illegalArgumentException) {
+                System.out.println("Not a genre");
+                addBookToLibrary();
+            }
+
+        System.out.println("Book successfully added to the library");
         toMenuOrCloseProgram();
     }
 
-    public void toMenuOrCloseProgram() {
+    // HELPER METHOD
+
+    private void toMenuOrCloseProgram() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Press 1 to move on, or '0' to end program");
 
-        switch (scanner.nextLine()) {
+        String userInput = scanner.nextLine();
+
+        switch (userInput) {
             default:
                 System.out.println("Write a valid number");
                 System.out.println("Press 1 to move on, or '0' to end program");
@@ -104,26 +122,5 @@ public class Program {
                 printMenu();
                 break;
         }
-        scanner.close();
     }
-
-    /*
-    private void printChoicesOrTerminate() {
-        Scanner input = new Scanner(System.in);
-        switch (input.nextLine()) {
-            case "1":
-                Program.addBooksFromFile();
-                printChoices();
-                break;
-            case "0":
-                System.out.println("Goodbye");
-                break;
-            default:
-                System.out.println("Write number");
-                printChoicesOrTerminate();
-        }
-        input.close();
-    }
-
-     */
 }
