@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Program {
 
     public ArrayList<Book> bookArrayList = new ArrayList<>();
+    Scanner scanner = new Scanner(System.in);
 
     public void printMenu() {
         System.out.println("Press 1: Get overview of books currently in the library");
@@ -21,7 +22,7 @@ public class Program {
         switch (checkUserInput()) {
             case 1 -> printBooksFromArrayList();
             case 2 -> addBookToLibrary();
-            case 3 -> setBookFields();
+            case 3 -> startBookUpdate();
             case 4 -> printBooksFromArrayList();
             case 5 -> printBooksFromArrayList();
             case 6 -> printBooksFromArrayList();
@@ -52,12 +53,9 @@ public class Program {
         }
     }
 
-    // HELPER METHODS
-
     private int checkUserInput() {
-        Scanner keyInput = new Scanner(System.in);
         int returnNumber = 0;
-        String input = keyInput.nextLine();
+        String input = scanner.nextLine();
 
         try {
             if (Integer.parseInt(input) <= 8) {
@@ -68,7 +66,6 @@ public class Program {
         } catch (NumberFormatException numberFormatException) {
             System.out.println("Not a number");
         }
-
         return returnNumber;
     }
 
@@ -77,7 +74,8 @@ public class Program {
     private void printBooksFromArrayList() {
         for (Book value : bookArrayList) {
             value.getBookInfo();
-        } toMenuOrCloseProgram();
+        }
+        toMenuOrCloseProgram();
     }
 
     // CASE 2
@@ -86,30 +84,26 @@ public class Program {
         System.out.println("To add a book to the library you need these fields:" + "\n");
         System.out.println("ISBN, Title, Author, Number of pages, Genre" + "\n");
 
-        Scanner bookInputScanner = new Scanner(System.in);
-
         try {
             System.out.println("What is the ISBN?");
-                long ISBN = Long.parseLong(bookInputScanner.nextLine());
+            long ISBN = Long.parseLong(scanner.nextLine());
             System.out.println("What is the title of the book?");
-                String bookTitle = bookInputScanner.nextLine();
+            String bookTitle = scanner.nextLine();
             System.out.println("What is the name of the author?");
-                String authorName = bookInputScanner.nextLine();
+            String authorName = scanner.nextLine();
             System.out.println("How many pages?");
-                short pageCount = Short.parseShort(bookInputScanner.nextLine());
+            short pageCount = Short.parseShort(scanner.nextLine());
             System.out.println("Which genre (Crime, Action, Fantasy, Classic, Other)?");
-                Genre genre = Genre.valueOf(bookInputScanner.nextLine().toUpperCase());
+            Genre genre = Genre.valueOf(scanner.nextLine().toUpperCase());
 
             bookArrayList.add(new Book(ISBN, bookTitle, authorName, pageCount, genre));
+        } catch (NumberFormatException numberFormatException) {
+            System.out.println("Not a number");
+            addBookToLibrary();
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Not a genre");
+            addBookToLibrary();
         }
-
-            catch (NumberFormatException numberFormatException) {
-                System.out.println("Not a number");
-                addBookToLibrary();
-            } catch (IllegalArgumentException illegalArgumentException) {
-                System.out.println("Not a genre");
-                addBookToLibrary();
-            }
 
         System.out.println("Book successfully added to the library");
         toMenuOrCloseProgram();
@@ -117,27 +111,155 @@ public class Program {
 
     // CASE 3
 
-    private void setBookFields() {
+    private void startBookUpdate() throws NumberFormatException {
+        System.out.println("Which book would you like to update? Specify either by ISBN or title");
+        System.out.println("1: ISBN \n2: Title \n3: Go back");
+
+        int userInput = checkUserInput();
+        findBook(userInput);
     }
 
-    // HELPER METHOD
+    private void findBook(int choice) {
+        int bookIndex = -1;
 
-    private void toMenuOrCloseProgram() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Press 1 to move on, or '0' to end program");
+        if (choice == 1) {
+            System.out.println("Write the ISBN");
+            bookIndex = findBookByISBN(Long.parseLong(scanner.nextLine()));
+        } else if (choice == 2) {
+            System.out.println("Title");
+            // bookIndex = findBookByTitle();
+        } else if (choice == 3) {
+            System.out.println("Menu loading...");
+            printMenu();
+        } else {
+            System.out.println("Not a valid number");
+            startBookUpdate();
+        }
 
-        String userInput = scanner.nextLine();
-
-        switch (userInput) {
-            default:
-                System.out.println("Write a valid number");
-                System.out.println("Press 1 to move on, or '0' to end program");
-            case "0":
-                System.out.println("Goodbye");
-                break;
-            case "1":
-                printMenu();
-                break;
+        if (bookIndex >= 0) {
+            updateBook(bookIndex);
+        } else {
+            System.out.println("Book was not found");
         }
     }
-}
+
+    private void updateBook(int bookIndex) {
+        System.out.println("Here is the current metadata for the book:\n");
+        bookArrayList.get(bookIndex).getBookInfo();
+
+        checkIfThenSetISBN(bookIndex);
+        checkIfThenSetTitle(bookIndex);
+        checkIfThenSetAuthor(bookIndex);
+        checkIfThenSetPages(bookIndex);
+        checkIfThenSetGenre(bookIndex);
+
+        System.out.println("Book updated");
+        toMenuOrCloseProgram();
+    }
+
+    // CHECK- & SET-METHODS
+
+    private void checkIfThenSetISBN(int bookIndex) {
+        System.out.println("Set new ISBN?");
+        System.out.println("Write new ISBN or \"0\" to move on with current ISBN");
+
+        try {
+            String consoleInput = scanner.nextLine();
+            if (Long.parseLong(consoleInput) > 0) {
+                bookArrayList.get(bookIndex).setISBN(Long.parseLong(consoleInput));
+            }
+        } catch (NumberFormatException nfe) {
+            System.out.println("Not a valid number");
+            updateBook(bookIndex);
+        }
+    }
+
+    private void checkIfThenSetTitle(int bookIndex) {
+        System.out.println("Set new title?");
+        System.out.println("Write new title or \"0\" to move on with current title");
+        String consoleInput = scanner.nextLine();
+
+        if (!consoleInput.equals("0")) {
+            bookArrayList.get(bookIndex).setBookTitle(consoleInput);
+        }
+    }
+
+    private void checkIfThenSetAuthor(int bookIndex) {
+        System.out.println("Set new author?");
+        System.out.println("Write the name of new author or \"0\" to move on");
+        String consoleInput = scanner.nextLine();
+
+        if (!consoleInput.equals("0")) {
+            bookArrayList.get(bookIndex).setAuthorName(consoleInput);
+        }
+    }
+
+    private void checkIfThenSetPages(int bookIndex) {
+        System.out.println("Set number of pages?");
+        System.out.println("Write number of pages or \"0\" to move on");
+        String consoleInput = scanner.nextLine();
+
+        try {
+            if (Integer.parseInt(consoleInput) > 0) {
+                bookArrayList.get(bookIndex).setPageCount(Integer.parseInt(consoleInput));
+            }
+        } catch (NumberFormatException nfe) {
+            System.out.println("Not a valid number");
+            checkIfThenSetGenre(bookIndex);
+        }
+    }
+
+    private void checkIfThenSetGenre(int bookIndex) {
+        System.out.println("Set new genre?");
+        System.out.println("Write new genre or \"0\" to move on");
+        String consoleInput = scanner.nextLine();
+
+        if (consoleInput.equals("0")) {
+            for (Genre g : Genre.values()) {
+                if (g.name().equals(consoleInput.toUpperCase())) {
+                    bookArrayList.get(bookIndex).setGenre(Genre.valueOf(consoleInput.toUpperCase()));
+                } else {
+                    System.out.println("Genre is not in the registry");
+                    checkIfThenSetGenre(bookIndex);
+                }
+            }
+        }
+    }
+
+        private int findBookByISBN(long ISBN) {
+            int bookArrayListIndex = -1;
+
+            for (Book book : bookArrayList) {
+                if (book.getISBN() == ISBN) {
+                    bookArrayListIndex = bookArrayList.indexOf(book);
+                }
+            }
+            return bookArrayListIndex;
+        }
+/*
+        private int findBookByTitle() {
+
+        }
+
+ */
+
+        // HELPER METHOD
+
+        private void toMenuOrCloseProgram() {
+            System.out.println("Press 1 to move on, or '0' to end program");
+
+            String userInput = scanner.nextLine();
+
+            switch (userInput) {
+                default:
+                    System.out.println("Write a valid number");
+                    System.out.println("Press 1 to move on, or '0' to end program");
+                case "0":
+                    System.out.println("Goodbye");
+                    break;
+                case "1":
+                    printMenu();
+                    break;
+            }
+        }
+    }

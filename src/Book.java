@@ -4,7 +4,7 @@ public class Book {
     private long ISBN;
     private String bookTitle;
     private String authorName;
-    private short pageCount;
+    private int pageCount;
     private Genre genre;
 
     public Book(long ISBN, String bookTitle, String authorName, short pageCount, Genre genre) {
@@ -41,11 +41,11 @@ public class Book {
         this.authorName = authorName;
     }
 
-    public short getPageCount() {
+    public int getPageCount() {
         return pageCount;
     }
 
-    public void setPageCount(short pageCount) {
+    public void setPageCount(int pageCount) {
         this.pageCount = pageCount;
     }
 
