@@ -126,8 +126,8 @@ public class Program {
             System.out.println("Write the ISBN");
             bookIndex = findBookByISBN(Long.parseLong(scanner.nextLine()));
         } else if (choice == 2) {
-            System.out.println("Title");
-            // bookIndex = findBookByTitle();
+            System.out.println("Write the title");
+            bookIndex = findBookByTitle(scanner.nextLine());
         } else if (choice == 3) {
             System.out.println("Menu loading...");
             printMenu();
@@ -141,6 +141,29 @@ public class Program {
         } else {
             System.out.println("Book was not found");
         }
+    }
+
+    private int findBookByISBN(long ISBN) {
+        int bookArrayListIndex = -1;
+
+        for (Book book : bookArrayList) {
+            if (book.getISBN() == ISBN) {
+                bookArrayListIndex = bookArrayList.indexOf(book);
+            }
+        }
+        return bookArrayListIndex;
+    }
+
+    private int findBookByTitle(String userTitle) {
+        int bookArrayListIndex = -1;
+
+        for (Book book : bookArrayList) {
+            if (userTitle.equalsIgnoreCase(book.getBookTitle())) {
+                bookArrayListIndex = bookArrayList.indexOf(book);
+            }
+        }
+
+        return bookArrayListIndex;
     }
 
     private void updateBook(int bookIndex) {
@@ -214,7 +237,7 @@ public class Program {
         System.out.println("Write new genre or \"0\" to move on");
         String consoleInput = scanner.nextLine();
 
-        if (consoleInput.equals("0")) {
+        if (!consoleInput.equals("0")) {
             for (Genre g : Genre.values()) {
                 if (g.name().equals(consoleInput.toUpperCase())) {
                     bookArrayList.get(bookIndex).setGenre(Genre.valueOf(consoleInput.toUpperCase()));
@@ -225,23 +248,6 @@ public class Program {
             }
         }
     }
-
-        private int findBookByISBN(long ISBN) {
-            int bookArrayListIndex = -1;
-
-            for (Book book : bookArrayList) {
-                if (book.getISBN() == ISBN) {
-                    bookArrayListIndex = bookArrayList.indexOf(book);
-                }
-            }
-            return bookArrayListIndex;
-        }
-/*
-        private int findBookByTitle() {
-
-        }
-
- */
 
         // HELPER METHOD
 
