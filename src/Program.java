@@ -12,8 +12,8 @@ public class Program {
         System.out.println("Press 1: Get overview of books currently in the library");
         System.out.println("Press 2: Add book to the library");
         System.out.println("Press 3: Change book metadata");
-        System.out.println("Press 4: See books in specified genre");
-        System.out.println("Press 5: Find books from their author");
+        System.out.println("Press 4: Show books by genre");
+        System.out.println("Press 5: Show books by author");
         System.out.println("Press 6: Find books from their ISBN");
         System.out.println("Press 7: Remove book");
         System.out.println("Press 8: End program" + "\n");
@@ -24,7 +24,7 @@ public class Program {
             case 2 -> addBookToLibrary();
             case 3 -> startBookUpdate();
             case 4 -> printBooksByGenre();
-            case 5 -> printBooksFromArrayList();
+            case 5 -> startPrintBooksByAuthor();
             case 6 -> printBooksFromArrayList();
             case 7 -> printBooksFromArrayList();
             case 8 -> printBooksFromArrayList();
@@ -72,6 +72,8 @@ public class Program {
     // CASE 1
 
     private void printBooksFromArrayList() {
+        System.out.println();
+
         for (Book value : bookArrayList) {
             value.getBookInfo();
         }
@@ -88,13 +90,13 @@ public class Program {
         try {
             System.out.println("What is the ISBN?");
             long ISBN = Long.parseLong(scanner.nextLine());
-            System.out.println("What is the title of the book?");
+            System.out.println("\nWhat is the title of the book?");
             String bookTitle = scanner.nextLine();
-            System.out.println("What is the name of the author?");
+            System.out.println("\nWhat is the name of the author?");
             String authorName = scanner.nextLine();
-            System.out.println("How many pages?");
+            System.out.println("\nHow many pages?");
             short pageCount = Short.parseShort(scanner.nextLine());
-            System.out.println("Which genre (Crime, Action, Fantasy, Classic, Other)?");
+            System.out.println("\nWhich genre (Crime, Action, Fantasy, Classic, Other)?");
             Genre genre = Genre.valueOf(scanner.nextLine().toUpperCase());
 
             bookArrayList.add(new Book(ISBN, bookTitle, authorName, pageCount, genre));
@@ -113,8 +115,9 @@ public class Program {
     // CASE 3
 
     private void startBookUpdate() throws NumberFormatException {
-        System.out.println("Which book would you like to update? Specify either by ISBN or title");
-        System.out.println("1: ISBN \n2: Title \n0: Go back");
+        System.out.println();
+        System.out.println("Which book would you like to update? Specify either by ISBN or title.\n");
+        System.out.println("1: ISBN \n2: Title \n0: Go back\n");
 
         int userInput = checkUserInput();
 
@@ -130,7 +133,7 @@ public class Program {
     // CASE 4
 
     private void printBooksByGenre() {
-        System.out.println("For which genre would you like to display its' books?");
+        System.out.println("\nFor which genre would you like to display its' books?");
         System.out.println("(Crime, Action, Fantasy, Classic, Other)?\n");
 
         try {
@@ -149,6 +152,38 @@ public class Program {
         }
     }
 
+    // CASE 5
+
+    private void startPrintBooksByAuthor() {
+        System.out.println("\nWhich author's books would you like to display?");
+        System.out.println("Specify either the authors name, or write \"1\" for a list of all authors in the library\n");
+
+        String userString = scanner.nextLine();
+
+        switch (userString) {
+            case "1":
+                System.out.println();
+                printAllAuthors();
+                System.out.println("\nWrite the name of the author\n");
+                userString = scanner.nextLine();
+            default:
+                if (printBooksByAuthor(userString).equals("Failed")) {
+                System.out.println("Author not found");
+            }
+        } toMenuOrCloseProgram();
+    }
+
+        private String printBooksByAuthor(String userString) {
+            System.out.println();
+            String status = "Failed";
+            for (Book book : bookArrayList) {
+                if (userString.equalsIgnoreCase(book.getAuthorName())) {
+                    book.getBookInfo();
+                    status = "Success";
+                }
+            } return status;
+        }
+
     // OTHER METHODS
 
     private int findBook(int choice) {
@@ -156,18 +191,22 @@ public class Program {
 
         switch (choice) {
             case 1:
+                System.out.println();
                 System.out.println("Write the ISBN");
                 bookIndex = findBookByISBN(Long.parseLong(scanner.nextLine()));
                 break;
             case 2:
+                System.out.println();
                 System.out.println("Write the title");
                 bookIndex = findBookByTitle(String.valueOf(scanner.nextLine()));
                 break;
             case 0:
+                System.out.println();
                 System.out.println("Menu loading...");
                 printMenu();
                 break;
             default:
+                System.out.println();
                 System.out.println("Not a valid number");
                 startBookUpdate();
         } return bookIndex;
@@ -277,6 +316,12 @@ public class Program {
                     checkIfThenSetGenre(bookIndex);
                 }
             }
+        }
+    }
+
+    private void printAllAuthors() {
+        for (Book book: bookArrayList) {
+            System.out.println(book.getAuthorName());
         }
     }
 
