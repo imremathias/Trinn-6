@@ -35,7 +35,7 @@ public class Program {
     public void addBooksFromFile() {
 
         try {
-            File bokTxt = new File("files/opg1/bok.txt");
+            File bokTxt = new File("./bok.txt");
             Scanner fileScanner = new Scanner(bokTxt);
 
             while (fileScanner.hasNextLine()) {
