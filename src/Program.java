@@ -12,7 +12,7 @@ public class Program {
         System.out.println("Press 1: Get overview of books currently in the library");
         System.out.println("Press 2: Add book to the library");
         System.out.println("Press 3: Change book metadata");
-        System.out.println("Press 4: Find books in specified genre");
+        System.out.println("Press 4: See books in specified genre");
         System.out.println("Press 5: Find books from their author");
         System.out.println("Press 6: Find books from their ISBN");
         System.out.println("Press 7: Remove book");
@@ -23,7 +23,7 @@ public class Program {
             case 1 -> printBooksFromArrayList();
             case 2 -> addBookToLibrary();
             case 3 -> startBookUpdate();
-            case 4 -> printBooksFromArrayList();
+            case 4 -> printBooksByGenre();
             case 5 -> printBooksFromArrayList();
             case 6 -> printBooksFromArrayList();
             case 7 -> printBooksFromArrayList();
@@ -81,6 +81,7 @@ public class Program {
     // CASE 2
 
     private void addBookToLibrary() {
+        System.out.println();
         System.out.println("To add a book to the library you need these fields:" + "\n");
         System.out.println("ISBN, Title, Author, Number of pages, Genre" + "\n");
 
@@ -113,34 +114,63 @@ public class Program {
 
     private void startBookUpdate() throws NumberFormatException {
         System.out.println("Which book would you like to update? Specify either by ISBN or title");
-        System.out.println("1: ISBN \n2: Title \n3: Go back");
+        System.out.println("1: ISBN \n2: Title \n0: Go back");
 
         int userInput = checkUserInput();
-        findBook(userInput);
-    }
 
-    private void findBook(int choice) {
-        int bookIndex = -1;
-
-        if (choice == 1) {
-            System.out.println("Write the ISBN");
-            bookIndex = findBookByISBN(Long.parseLong(scanner.nextLine()));
-        } else if (choice == 2) {
-            System.out.println("Write the title");
-            bookIndex = findBookByTitle(scanner.nextLine());
-        } else if (choice == 3) {
-            System.out.println("Menu loading...");
-            printMenu();
+        int foundIndex = findBook(userInput);
+        if (foundIndex >= 0) {
+            updateBook(foundIndex);
         } else {
-            System.out.println("Not a valid number");
+            System.out.println("Book not found in library");
             startBookUpdate();
         }
+    }
 
-        if (bookIndex >= 0) {
-            updateBook(bookIndex);
-        } else {
-            System.out.println("Book was not found");
+    // CASE 4
+
+    private void printBooksByGenre() {
+        System.out.println("For which genre would you like to display its' books?");
+        System.out.println("(Crime, Action, Fantasy, Classic, Other)?\n");
+
+        try {
+            Genre genre = Genre.valueOf(scanner.nextLine().toUpperCase());
+            System.out.println();
+
+            for (Book book : bookArrayList) {
+                if (genre == book.getGenre()) {
+                    book.getBookInfo();
+                }
+            }
+            toMenuOrCloseProgram();
+        } catch (IllegalArgumentException illegalArgumentException) {
+            System.out.println("Not a genre");
+            printBooksByGenre();
         }
+    }
+
+    // OTHER METHODS
+
+    private int findBook(int choice) {
+        int bookIndex = -1;
+
+        switch (choice) {
+            case 1:
+                System.out.println("Write the ISBN");
+                bookIndex = findBookByISBN(Long.parseLong(scanner.nextLine()));
+                break;
+            case 2:
+                System.out.println("Write the title");
+                bookIndex = findBookByTitle(String.valueOf(scanner.nextLine()));
+                break;
+            case 0:
+                System.out.println("Menu loading...");
+                printMenu();
+                break;
+            default:
+                System.out.println("Not a valid number");
+                startBookUpdate();
+        } return bookIndex;
     }
 
     private int findBookByISBN(long ISBN) {
@@ -160,6 +190,7 @@ public class Program {
         for (Book book : bookArrayList) {
             if (userTitle.equalsIgnoreCase(book.getBookTitle())) {
                 bookArrayListIndex = bookArrayList.indexOf(book);
+                break;
             }
         }
 
@@ -253,8 +284,9 @@ public class Program {
 
         private void toMenuOrCloseProgram() {
             System.out.println("Press 1 to move on, or '0' to end program");
-
+            System.out.println();
             String userInput = scanner.nextLine();
+            System.out.println();
 
             switch (userInput) {
                 default:
