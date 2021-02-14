@@ -25,7 +25,7 @@ public class Program {
             case 3 -> startBookUpdate();
             case 4 -> printBooksByGenre();
             case 5 -> startPrintBooksByAuthor();
-            case 6 -> printBooksFromArrayList();
+            case 6 -> findBook(1);
             case 7 -> printBooksFromArrayList();
             case 8 -> printBooksFromArrayList();
             case 0 -> printMenu();
@@ -160,17 +160,16 @@ public class Program {
 
         String userString = scanner.nextLine();
 
-        switch (userString) {
-            case "1":
-                System.out.println();
-                printAllAuthors();
-                System.out.println("\nWrite the name of the author\n");
-                userString = scanner.nextLine();
-            default:
-                if (printBooksByAuthor(userString).equals("Failed")) {
-                System.out.println("Author not found");
-            }
-        } toMenuOrCloseProgram();
+        if ("1".equals(userString)) {
+            System.out.println();
+            printAllAuthors();
+            System.out.println("\nWrite the name of the author\n");
+            userString = scanner.nextLine();
+        }
+        if (printBooksByAuthor(userString).equals("Failed")) {
+            System.out.println("Author not found");
+        }
+        toMenuOrCloseProgram();
     }
 
         private String printBooksByAuthor(String userString) {
@@ -190,26 +189,35 @@ public class Program {
         int bookIndex = -1;
 
         switch (choice) {
-            case 1:
+            case 1 -> {
                 System.out.println();
-                System.out.println("Write the ISBN");
+                System.out.println("Write the ISBN\n");
                 bookIndex = findBookByISBN(Long.parseLong(scanner.nextLine()));
-                break;
-            case 2:
+                    if (bookIndex == -1) {
+                        System.out.println("\nISBN not found in library\n");
+                    } else {
+                        System.out.println();
+                        bookArrayList.get(bookIndex).getBookInfo();
+                    }
+                toMenuOrCloseProgram();
+            }
+            case 2 -> {
                 System.out.println();
                 System.out.println("Write the title");
                 bookIndex = findBookByTitle(String.valueOf(scanner.nextLine()));
-                break;
-            case 0:
+            }
+            case 0 -> {
                 System.out.println();
                 System.out.println("Menu loading...");
                 printMenu();
-                break;
-            default:
+            }
+            default -> {
                 System.out.println();
                 System.out.println("Not a valid number");
                 startBookUpdate();
-        } return bookIndex;
+            }
+        }
+        return bookIndex;
     }
 
     private int findBookByISBN(long ISBN) {
