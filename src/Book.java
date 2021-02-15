@@ -62,10 +62,10 @@ public class Book {
     // GET EVERY BOOK FIELD
 
     public void getBookInfo() {
-        System.out.println(String.valueOf(ISBN));
+        System.out.println(ISBN);
         System.out.println(bookTitle);
         System.out.println(authorName);
-        System.out.println(String.valueOf(pageCount));
+        System.out.println(pageCount);
         System.out.println(String.valueOf(genre).substring(0, 1).toUpperCase() + String.valueOf(genre).substring(1).toLowerCase(Locale.ROOT));
         System.out.println();
     }

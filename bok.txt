@@ -40,3 +40,15 @@ Knut Hamsun
 357
 CLASSIC
 ---
+1234567890123
+The Hobbit
+J. R. R. Tolkien
+283
+FANTASY
+---
+9781577151166
+Tao Te Ching
+Lao Tzu
+88
+CLASSIC
+---

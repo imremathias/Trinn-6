@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -30,17 +32,17 @@ public class Program {
             case 7 -> startRemoveBook();
             case 0 -> {
                 System.out.println("\nSaving library state...");
-                writeChangesToFile();
                 System.out.println("\nHave a nice day");
             }
         }
-    }
 
-    public void writeChangesToFile() {
-        for (Book book : bookArrayList) {
-            
+        try {
+            writeChangesToFile();
+        } catch (IOException ioException) {
+            System.out.println("File not found. Changes to the library will not be saved.");
         }
     }
+
 
     public void addBooksFromFile() {
 
@@ -225,6 +227,23 @@ public class Program {
         } toMenuOrCloseProgram();
     }
 
+    // WRITE-CHANGES-TO-FILE
+
+    public void writeChangesToFile() throws IOException {
+        File bokTxt = new File("./bok.txt");
+        FileWriter fileWriter = new FileWriter(bokTxt);
+
+        for (Book book : bookArrayList) {
+            fileWriter.write(book.getISBN() + "\n"
+                    + book.getBookTitle() + "\n"
+                    + book.getAuthorName() + "\n"
+                    + book.getPageCount() + "\n"
+                    + book.getGenre() + "\n"
+                    + "---\n");
+        }
+        fileWriter.close();
+    }
+
     // OTHER METHODS
 
     private int findBook(int choice) {
@@ -382,9 +401,8 @@ public class Program {
             switch (userInput) {
                 default:
                     System.out.println("Write a valid number");
-                    System.out.println("Press 1 to move on, or '0' to end program");
+                    toMenuOrCloseProgram();
                 case "0":
-                    System.out.println("Goodbye");
                     break;
                 case "1":
                     printMenu();
