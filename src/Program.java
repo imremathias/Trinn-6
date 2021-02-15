@@ -16,19 +16,29 @@ public class Program {
         System.out.println("Press 5: Show books by author");
         System.out.println("Press 6: Find books from their ISBN");
         System.out.println("Press 7: Remove book");
-        System.out.println("Press 8: End program" + "\n");
+        System.out.println("Press 0: End program" + "\n");
         System.out.println("Write a number followed by enter/return." + "\n");
 
         switch (checkUserInput()) {
+            case -1 -> printMenu();
             case 1 -> printBooksFromArrayList();
             case 2 -> addBookToLibrary();
             case 3 -> startBookUpdate();
             case 4 -> printBooksByGenre();
             case 5 -> startPrintBooksByAuthor();
-            case 6 -> findBook(1);
-            case 7 -> printBooksFromArrayList();
-            case 8 -> printBooksFromArrayList();
-            case 0 -> printMenu();
+            case 6 -> startFindBookByISBN();
+            case 7 -> startRemoveBook();
+            case 0 -> {
+                System.out.println("\nSaving library state...");
+                writeChangesToFile();
+                System.out.println("\nHave a nice day");
+            }
+        }
+    }
+
+    public void writeChangesToFile() {
+        for (Book book : bookArrayList) {
+            
         }
     }
 
@@ -54,14 +64,14 @@ public class Program {
     }
 
     private int checkUserInput() {
-        int returnNumber = 0;
+        int returnNumber = -1;
         String input = scanner.nextLine();
 
         try {
-            if (Integer.parseInt(input) <= 8) {
+            if (Integer.parseInt(input) <= 7) {
                 returnNumber = Integer.parseInt(input);
             } else {
-                System.out.println("Not a valid number");
+                System.out.println("\nNot a valid number\n");
             }
         } catch (NumberFormatException numberFormatException) {
             System.out.println("Not a number");
@@ -183,6 +193,38 @@ public class Program {
             } return status;
         }
 
+    /// CASE 7
+
+    private void startRemoveBook() {
+        System.out.println("\nWhich book would you like to delete? Specify either by ISBN or title.\n");
+        System.out.println("1: ISBN \n2: Title \n0: Go back\n");
+
+        int userInput = checkUserInput();
+        int foundIndex = findBook(userInput);
+
+        if (foundIndex >= 0) {
+            deleteBook(foundIndex);
+            System.out.println("Book deleted");
+        } else {
+            System.out.println("Book not found in library");
+            startRemoveBook();
+        } toMenuOrCloseProgram();
+    }
+
+    private void deleteBook(int index) {
+        bookArrayList.remove(index);
+    }
+
+    private void startFindBookByISBN() {
+        int bookIndex = findBook(1);
+        if (bookIndex != -1) {
+            System.out.println();
+            bookArrayList.get(bookIndex).getBookInfo();
+        } else {
+            System.out.println("Book not found");
+        } toMenuOrCloseProgram();
+    }
+
     // OTHER METHODS
 
     private int findBook(int choice) {
@@ -190,16 +232,12 @@ public class Program {
 
         switch (choice) {
             case 1 -> {
-                System.out.println();
-                System.out.println("Write the ISBN\n");
+                System.out.println("\nWrite the ISBN\n");
                 bookIndex = findBookByISBN(Long.parseLong(scanner.nextLine()));
                     if (bookIndex == -1) {
                         System.out.println("\nISBN not found in library\n");
-                    } else {
-                        System.out.println();
-                        bookArrayList.get(bookIndex).getBookInfo();
+                        toMenuOrCloseProgram();
                     }
-                toMenuOrCloseProgram();
             }
             case 2 -> {
                 System.out.println();
